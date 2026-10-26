@@ -1,0 +1,27 @@
+{
+  "USM00072293": {
+    "status": "WARN",
+    "newest_sounding": "2026-10-25 12:00:00",
+    "age_hours": 34.0,
+    "soundings": 19353,
+    "valid_fraction": 0.7922,
+    "errors": [],
+    "warnings": [
+      "INCOMPLETE: 1 of 26 recent soundings failed QC {'only 11 levels below 3 km': 1}",
+      "only 79% of all soundings pass QC"
+    ]
+  },
+  "AEM00041217": {
+    "status": "WARN",
+    "newest_sounding": "2026-05-04 12:00:00",
+    "age_hours": 4210.0,
+    "soundings": 17208,
+    "valid_fraction": 0.6026,
+    "errors": [],
+    "warnings": [
+      "STALE: newest sounding is 4210 h old (limit 36 h)",
+      "no soundings in the last 14 days",
+      "only 60% of all soundings pass QC"
+    ]
+  }
+}

@@ -1,0 +1,823 @@
+{
+  "setup": {
+    "train_station": "USM00072293 (San Diego/Miramar, CA)",
+    "stress_station": "AEM00041217 (Abu Dhabi Intl, UAE (Persian Gulf))",
+    "train_period": "2000-01-01 to 2022-01-01 (exclusive)",
+    "test_period": "2022-01-01 onward (never used for training or tuning)",
+    "current_system_stand_in": "persistence: keep using the ducting state from the previous sounding",
+    "leads_hours": [
+      12,
+      24
+    ],
+    "nn": "5-member MLP ensemble (32,16), CPU only",
+    "ducting_threshold_m_units": 5.0
+  },
+  "experiments": {
+    "lead_12h": {
+      "san_diego": {
+        "n_train": 9663,
+        "duct_present": {
+          "n_test": 3226,
+          "persistence": {
+            "brier": 0.22535647861128333,
+            "accuracy": 0.7746435213887167,
+            "f1": 0.854396154616463
+          },
+          "climatology": {
+            "brier": 0.1618641422378861,
+            "accuracy": 0.7327960322380657,
+            "f1": 0.8204914618908788,
+            "skill_vs_persistence": 0.28174178423738583
+          },
+          "nn": {
+            "brier": 0.12985460581255795,
+            "accuracy": 0.8019218846869188,
+            "f1": 0.8690842040565457,
+            "skill_vs_persistence": 0.42378135027329855,
+            "skill_vs_climatology": 0.1977555744142816
+          },
+          "gbm": {
+            "brier": 0.1289954761392501,
+            "accuracy": 0.8065716057036578,
+            "f1": 0.8721311475409836,
+            "skill_vs_persistence": 0.4275936643394487,
+            "skill_vs_climatology": 0.20306329520672994
+          },
+          "metric_for_skill": "Brier score",
+          "nn_minus_persistence_loss": {
+            "mean": -0.09550187279872538,
+            "ci95": [
+              -0.12045464639953438,
+              -0.07371944913992808
+            ],
+            "loss": "squared error of probability (Brier)"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.03200953642532816,
+            "ci95": [
+              -0.04231515861735414,
+              -0.022653232377474977
+            ],
+            "loss": "squared error of probability (Brier)"
+          }
+        },
+        "trap_strength_m": {
+          "n_test": 3226,
+          "persistence": {
+            "mae": 12.602661621172217,
+            "rmse": 18.107677364459036
+          },
+          "climatology": {
+            "mae": 12.971515508242963,
+            "rmse": 17.782411837393507,
+            "skill_vs_persistence": 0.035603039785760404
+          },
+          "nn": {
+            "mae": 12.016151876893536,
+            "rmse": 17.142537660314034,
+            "skill_vs_persistence": 0.10375916234645055,
+            "skill_vs_climatology": 0.07067227020867972
+          },
+          "gbm": {
+            "mae": 12.228703851119672,
+            "rmse": 17.551913339058732,
+            "skill_vs_persistence": 0.06044234284403871,
+            "skill_vs_climatology": 0.025756305839827798
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -0.5865097442786802,
+            "ci95": [
+              -1.0092314959601838,
+              -0.17537713939232444
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.9553636313494225,
+            "ci95": [
+              -1.3323744474353014,
+              -0.5796681765231936
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "trap_thickness_m": {
+          "n_test": 3226,
+          "persistence": {
+            "mae": 84.26955125325772,
+            "rmse": 115.47066376160618
+          },
+          "climatology": {
+            "mae": 71.30027226173999,
+            "rmse": 93.65834273610713,
+            "skill_vs_persistence": 0.3421155627277028
+          },
+          "nn": {
+            "mae": 72.81426230567016,
+            "rmse": 103.06327986327376,
+            "skill_vs_persistence": 0.20335544171198194,
+            "skill_vs_climatology": -0.21091868594892493
+          },
+          "gbm": {
+            "mae": 73.19947659955605,
+            "rmse": 103.42853383336892,
+            "skill_vs_persistence": 0.19769885486352334,
+            "skill_vs_climatology": -0.219516832565543
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -11.455288947587567,
+            "ci95": [
+              -14.992373532118659,
+              -8.263930938215335
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 1.5139900439301612,
+            "ci95": [
+              -1.1230071779592912,
+              4.0706989948825365
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "confidence": {
+          "target": "trap_strength_m",
+          "spearman_spread_vs_error": 0.4264060511829397,
+          "mae_by_band": {
+            "green": 6.4435312984200666,
+            "yellow": 12.841538716452982,
+            "red": 16.768569448903822
+          },
+          "note": "bands are terciles of ensemble spread; error should rise green -> red if useful"
+        },
+        "nn_latency_ms_per_sounding": 8.6
+      },
+      "abu_dhabi_local": {
+        "n_train": 5560,
+        "duct_present": {
+          "n_test": 1514,
+          "persistence": {
+            "brier": 0.28401585204755614,
+            "accuracy": 0.7159841479524438,
+            "f1": 0.8212801330008312
+          },
+          "climatology": {
+            "brier": 0.15678337492071776,
+            "accuracy": 0.7952443857331571,
+            "f1": 0.8859455481972038,
+            "skill_vs_persistence": 0.4479766752791472
+          },
+          "nn": {
+            "brier": 0.14157352610448853,
+            "accuracy": 0.7965653896961691,
+            "f1": 0.8849028400597907,
+            "skill_vs_persistence": 0.5015294918088473,
+            "skill_vs_climatology": 0.09701187274429157
+          },
+          "gbm": {
+            "brier": 0.1454176219702776,
+            "accuracy": 0.7952443857331571,
+            "f1": 0.8811349693251533,
+            "skill_vs_persistence": 0.4879946984581388,
+            "skill_vs_climatology": 0.0724933556009213
+          },
+          "metric_for_skill": "Brier score",
+          "nn_minus_persistence_loss": {
+            "mean": -0.1424423259430676,
+            "ci95": [
+              -0.1662565122876152,
+              -0.12033613936121972
+            ],
+            "loss": "squared error of probability (Brier)"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.015209848816229247,
+            "ci95": [
+              -0.020855954334511317,
+              -0.009517217346402011
+            ],
+            "loss": "squared error of probability (Brier)"
+          }
+        },
+        "trap_strength_m": {
+          "n_test": 1514,
+          "persistence": {
+            "mae": 20.600631055466287,
+            "rmse": 27.757813908096978
+          },
+          "climatology": {
+            "mae": 16.903214826268318,
+            "rmse": 21.148193590190747,
+            "skill_vs_persistence": 0.4195350048474399
+          },
+          "nn": {
+            "mae": 15.823059879155496,
+            "rmse": 21.298357518018957,
+            "skill_vs_persistence": 0.41126249089534495,
+            "skill_vs_climatology": -0.014251529413794817
+          },
+          "gbm": {
+            "mae": 15.935471929587393,
+            "rmse": 21.334473365938393,
+            "skill_vs_persistence": 0.40926414129839506,
+            "skill_vs_climatology": -0.017694199710260428
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -4.777571176310796,
+            "ci95": [
+              -6.19494193787155,
+              -3.6093677977466916
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -1.0801549471128264,
+            "ci95": [
+              -1.8041364204531407,
+              -0.26019655249760376
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "trap_thickness_m": {
+          "n_test": 1514,
+          "persistence": {
+            "mae": 106.43770010544043,
+            "rmse": 142.5349235699887
+          },
+          "climatology": {
+            "mae": 73.2797247797248,
+            "rmse": 94.62937184011331,
+            "skill_vs_persistence": 0.5592327276200837
+          },
+          "nn": {
+            "mae": 77.1579907225543,
+            "rmse": 107.92405973051596,
+            "skill_vs_persistence": 0.42668411785399674,
+            "skill_vs_climatology": -0.30072244032637174
+          },
+          "gbm": {
+            "mae": 75.54537194884493,
+            "rmse": 106.16710328456293,
+            "skill_vs_persistence": 0.4451988384577126,
+            "skill_vs_climatology": -0.2587167793712244
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -29.279709382886132,
+            "ci95": [
+              -35.5874135828698,
+              -23.383073146879838
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 3.878265942829507,
+            "ci95": [
+              -0.45087393051631197,
+              7.622409116198484
+            ],
+            "loss": "absolute error"
+          }
+        }
+      },
+      "abu_dhabi_transfer_from_san_diego": {
+        "n_train": 9663,
+        "duct_present": {
+          "n_test": 1514,
+          "persistence": {
+            "brier": 0.28401585204755614,
+            "accuracy": 0.7159841479524438,
+            "f1": 0.8212801330008312
+          },
+          "climatology": {
+            "brier": 0.15678337492071776,
+            "accuracy": 0.7952443857331571,
+            "f1": 0.8859455481972038,
+            "skill_vs_persistence": 0.4479766752791472
+          },
+          "nn": {
+            "brier": 0.1800479998419805,
+            "accuracy": 0.7371202113606341,
+            "f1": 0.8406725380304243,
+            "skill_vs_persistence": 0.3660635540447478,
+            "skill_vs_climatology": -0.14838706548463576
+          },
+          "gbm": {
+            "brier": 0.17162708233593443,
+            "accuracy": 0.7509907529722589,
+            "f1": 0.848655158570855,
+            "skill_vs_persistence": 0.3957130170776634,
+            "skill_vs_climatology": -0.0946765396696101
+          },
+          "metric_for_skill": "Brier score",
+          "nn_minus_persistence_loss": {
+            "mean": -0.10396785220557564,
+            "ci95": [
+              -0.12412357010277428,
+              -0.08489454362935338
+            ],
+            "loss": "squared error of probability (Brier)"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 0.023264624921262755,
+            "ci95": [
+              0.010307525687030706,
+              0.03610212213954686
+            ],
+            "loss": "squared error of probability (Brier)"
+          }
+        },
+        "trap_strength_m": {
+          "n_test": 1514,
+          "persistence": {
+            "mae": 20.600631055466287,
+            "rmse": 27.757813908096978
+          },
+          "climatology": {
+            "mae": 16.903214826268318,
+            "rmse": 21.148193590190747,
+            "skill_vs_persistence": 0.4195350048474399
+          },
+          "nn": {
+            "mae": 20.908230569518427,
+            "rmse": 28.06027132020325,
+            "skill_vs_persistence": -0.02191132530537776,
+            "skill_vs_climatology": -0.7605046537505589
+          },
+          "gbm": {
+            "mae": 18.827717966895644,
+            "rmse": 25.3036261902891,
+            "skill_vs_persistence": 0.16901151363059608,
+            "skill_vs_climatology": -0.43159104047437036
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": 0.3075995140521399,
+            "ci95": [
+              -0.5377754656751924,
+              1.2085800944812986
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 4.00501574325011,
+            "ci95": [
+              2.5607080056774962,
+              5.7108550052307585
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "trap_thickness_m": {
+          "n_test": 1514,
+          "persistence": {
+            "mae": 106.43770010544043,
+            "rmse": 142.5349235699887
+          },
+          "climatology": {
+            "mae": 73.2797247797248,
+            "rmse": 94.62937184011331,
+            "skill_vs_persistence": 0.5592327276200837
+          },
+          "nn": {
+            "mae": 121.01462768850588,
+            "rmse": 174.31046838746647,
+            "skill_vs_persistence": -0.4955618055294242,
+            "skill_vs_climatology": -2.393087235025779
+          },
+          "gbm": {
+            "mae": 91.5528419636286,
+            "rmse": 123.67802715286282,
+            "skill_vs_persistence": 0.24709093926572978,
+            "skill_vs_climatology": -0.7081782335356914
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": 14.576927583065451,
+            "ci95": [
+              5.225485940970363,
+              27.21853246892092
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 47.7349029087811,
+            "ci95": [
+              35.521302428121345,
+              62.44304931324804
+            ],
+            "loss": "absolute error"
+          }
+        }
+      }
+    },
+    "lead_24h": {
+      "san_diego": {
+        "n_train": 9598,
+        "duct_present": {
+          "n_test": 3213,
+          "persistence": {
+            "brier": 0.23436041083099907,
+            "accuracy": 0.765639589169001,
+            "f1": 0.8482772516623011
+          },
+          "climatology": {
+            "brier": 0.1639176778962975,
+            "accuracy": 0.7301587301587301,
+            "f1": 0.8183532369578881,
+            "skill_vs_persistence": 0.3005743704106191
+          },
+          "nn": {
+            "brier": 0.14069263090966896,
+            "accuracy": 0.7858699035169623,
+            "f1": 0.8598207008964955,
+            "skill_vs_persistence": 0.39967407289141255,
+            "skill_vs_climatology": 0.1416872620738433
+          },
+          "gbm": {
+            "brier": 0.14201248508142275,
+            "accuracy": 0.7787114845938375,
+            "f1": 0.8554584265094531,
+            "skill_vs_persistence": 0.39404234453305276,
+            "skill_vs_climatology": 0.1336353290017509
+          },
+          "metric_for_skill": "Brier score",
+          "nn_minus_persistence_loss": {
+            "mean": -0.09366777992133012,
+            "ci95": [
+              -0.11667757412614964,
+              -0.07184324689924053
+            ],
+            "loss": "squared error of probability (Brier)"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.023225046986628542,
+            "ci95": [
+              -0.032147154538235245,
+              -0.015052557056126037
+            ],
+            "loss": "squared error of probability (Brier)"
+          }
+        },
+        "trap_strength_m": {
+          "n_test": 3213,
+          "persistence": {
+            "mae": 13.323799204779498,
+            "rmse": 18.616156152070925
+          },
+          "climatology": {
+            "mae": 12.94324326298126,
+            "rmse": 17.666594203900797,
+            "skill_vs_persistence": 0.09941306807043582
+          },
+          "nn": {
+            "mae": 12.62194185704804,
+            "rmse": 17.67254170563424,
+            "skill_vs_persistence": 0.09880659645820333,
+            "skill_vs_climatology": -0.000673418179556462
+          },
+          "gbm": {
+            "mae": 12.905838478726045,
+            "rmse": 18.19220216181322,
+            "skill_vs_persistence": 0.04502825831486312,
+            "skill_vs_climatology": -0.06038818444661387
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -0.7018573477314567,
+            "ci95": [
+              -1.0722467303421708,
+              -0.3226915653963039
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.3213014059332215,
+            "ci95": [
+              -0.6691833202741133,
+              0.03984258390599564
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "trap_thickness_m": {
+          "n_test": 3213,
+          "persistence": {
+            "mae": 84.16597362046748,
+            "rmse": 113.76392689457175
+          },
+          "climatology": {
+            "mae": 71.54868725817308,
+            "rmse": 94.19406871047869,
+            "skill_vs_persistence": 0.31445184857187203
+          },
+          "nn": {
+            "mae": 76.76091924692938,
+            "rmse": 107.69093534692787,
+            "skill_vs_persistence": 0.1039151209776219,
+            "skill_vs_climatology": -0.30710713340217155
+          },
+          "gbm": {
+            "mae": 77.15496772682009,
+            "rmse": 109.02576566323962,
+            "skill_vs_persistence": 0.08156348615028364,
+            "skill_vs_climatology": -0.3397111668034365
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -7.4050543735381185,
+            "ci95": [
+              -10.180059624980116,
+              -4.322178755699484
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 5.2122319887562885,
+            "ci95": [
+              2.3283355337875884,
+              8.03797678335557
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "confidence": {
+          "target": "trap_strength_m",
+          "spearman_spread_vs_error": 0.3722494398322402,
+          "mae_by_band": {
+            "green": 7.628780442710129,
+            "yellow": 13.395954658133267,
+            "red": 16.84109047030072
+          },
+          "note": "bands are terciles of ensemble spread; error should rise green -> red if useful"
+        },
+        "nn_latency_ms_per_sounding": 9.4
+      },
+      "abu_dhabi_local": {
+        "n_train": 5921,
+        "duct_present": {
+          "n_test": 1478,
+          "persistence": {
+            "brier": 0.2577807848443843,
+            "accuracy": 0.7422192151556157,
+            "f1": 0.8375266524520256
+          },
+          "climatology": {
+            "brier": 0.15695397599185293,
+            "accuracy": 0.793640054127199,
+            "f1": 0.8849490758204451,
+            "skill_vs_persistence": 0.3911339199056204
+          },
+          "nn": {
+            "brier": 0.14693736603467672,
+            "accuracy": 0.793640054127199,
+            "f1": 0.8849490758204451,
+            "skill_vs_persistence": 0.4299910052513066,
+            "skill_vs_climatology": 0.0638187716741635
+          },
+          "gbm": {
+            "brier": 0.1519675580380169,
+            "accuracy": 0.7807848443843031,
+            "f1": 0.8740279937791602,
+            "skill_vs_persistence": 0.4104775570073781,
+            "skill_vs_climatology": 0.03176993715721388
+          },
+          "metric_for_skill": "Brier score",
+          "nn_minus_persistence_loss": {
+            "mean": -0.11084341880970759,
+            "ci95": [
+              -0.13046980666942554,
+              -0.09137864920401502
+            ],
+            "loss": "squared error of probability (Brier)"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.010016609957176209,
+            "ci95": [
+              -0.013266869467887991,
+              -0.0068036358243025365
+            ],
+            "loss": "squared error of probability (Brier)"
+          }
+        },
+        "trap_strength_m": {
+          "n_test": 1478,
+          "persistence": {
+            "mae": 17.45062314427501,
+            "rmse": 23.227982326897738
+          },
+          "climatology": {
+            "mae": 16.825236538150346,
+            "rmse": 21.07648124790989,
+            "skill_vs_persistence": 0.1766713293969805
+          },
+          "nn": {
+            "mae": 16.25532584598531,
+            "rmse": 21.417694130270938,
+            "skill_vs_persistence": 0.1497973579427191,
+            "skill_vs_climatology": -0.032640636010620616
+          },
+          "gbm": {
+            "mae": 16.208181688010015,
+            "rmse": 21.280696041799867,
+            "skill_vs_persistence": 0.16063919897251822,
+            "skill_vs_climatology": -0.01947233346401034
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -1.195297298289701,
+            "ci95": [
+              -2.055824075468586,
+              -0.33854523444195234
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": -0.5699106921650355,
+            "ci95": [
+              -1.4291564991126322,
+              0.3383977132682197
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "trap_thickness_m": {
+          "n_test": 1478,
+          "persistence": {
+            "mae": 92.52889465974448,
+            "rmse": 124.46061440323024
+          },
+          "climatology": {
+            "mae": 73.3606647102484,
+            "rmse": 94.7303134347811,
+            "skill_vs_persistence": 0.4206859421204774
+          },
+          "nn": {
+            "mae": 77.49110803250704,
+            "rmse": 107.31964247950752,
+            "skill_vs_persistence": 0.25647675029913697,
+            "skill_vs_climatology": -0.2834545262416026
+          },
+          "gbm": {
+            "mae": 77.63473410783799,
+            "rmse": 107.81721867745874,
+            "skill_vs_persistence": 0.24956623322820304,
+            "skill_vs_climatology": -0.29538331853818267
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -15.037786627237452,
+            "ci95": [
+              -18.96951873402978,
+              -11.027054438636235
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 4.130443322258636,
+            "ci95": [
+              0.38304107503286083,
+              8.127939957148527
+            ],
+            "loss": "absolute error"
+          }
+        }
+      },
+      "abu_dhabi_transfer_from_san_diego": {
+        "n_train": 9598,
+        "duct_present": {
+          "n_test": 1478,
+          "persistence": {
+            "brier": 0.2577807848443843,
+            "accuracy": 0.7422192151556157,
+            "f1": 0.8375266524520256
+          },
+          "climatology": {
+            "brier": 0.15695397599185293,
+            "accuracy": 0.793640054127199,
+            "f1": 0.8849490758204451,
+            "skill_vs_persistence": 0.3911339199056204
+          },
+          "nn": {
+            "brier": 0.15980982382125467,
+            "accuracy": 0.7746955345060893,
+            "f1": 0.8696673189823875,
+            "skill_vs_persistence": 0.38005532911334805,
+            "skill_vs_climatology": -0.01819544749570401
+          },
+          "gbm": {
+            "brier": 0.19061676318492332,
+            "accuracy": 0.7050067658998647,
+            "f1": 0.8032490974729242,
+            "skill_vs_persistence": 0.26054704465271217,
+            "skill_vs_climatology": -0.21447553004211728
+          },
+          "metric_for_skill": "Brier score",
+          "nn_minus_persistence_loss": {
+            "mean": -0.09797096102312965,
+            "ci95": [
+              -0.11920920700749099,
+              -0.07631167382399377
+            ],
+            "loss": "squared error of probability (Brier)"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 0.0028558478294017425,
+            "ci95": [
+              -0.00655472773915937,
+              0.012189628387672256
+            ],
+            "loss": "squared error of probability (Brier)"
+          }
+        },
+        "trap_strength_m": {
+          "n_test": 1478,
+          "persistence": {
+            "mae": 17.45062314427501,
+            "rmse": 23.227982326897738
+          },
+          "climatology": {
+            "mae": 16.825236538150346,
+            "rmse": 21.07648124790989,
+            "skill_vs_persistence": 0.1766713293969805
+          },
+          "nn": {
+            "mae": 17.39707552694033,
+            "rmse": 23.003410269735078,
+            "skill_vs_persistence": 0.019242864380042746,
+            "skill_vs_climatology": -0.19120974482964948
+          },
+          "gbm": {
+            "mae": 21.392429617631713,
+            "rmse": 29.007178394923013,
+            "skill_vs_persistence": -0.5595094038950181,
+            "skill_vs_climatology": -0.8941517034173094
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -0.05354761733468026,
+            "ci95": [
+              -0.9896377637516597,
+              0.9576557530982993
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 0.5718389887899854,
+            "ci95": [
+              -0.45207862245015684,
+              1.5494288992971987
+            ],
+            "loss": "absolute error"
+          }
+        },
+        "trap_thickness_m": {
+          "n_test": 1478,
+          "persistence": {
+            "mae": 92.52889465974448,
+            "rmse": 124.46061440323024
+          },
+          "climatology": {
+            "mae": 73.3606647102484,
+            "rmse": 94.7303134347811,
+            "skill_vs_persistence": 0.4206859421204774
+          },
+          "nn": {
+            "mae": 86.92061033202882,
+            "rmse": 127.84760202466195,
+            "skill_vs_persistence": -0.05516722284830933,
+            "skill_vs_climatology": -0.8214079366735265
+          },
+          "gbm": {
+            "mae": 93.94045698441067,
+            "rmse": 129.1757906601896,
+            "skill_vs_persistence": -0.07720503773473841,
+            "skill_vs_climatology": -0.8594491590237914
+          },
+          "metric_for_skill": "MSE",
+          "nn_minus_persistence_loss": {
+            "mean": -5.608284327715679,
+            "ci95": [
+              -11.03553073999755,
+              1.2438426473940858
+            ],
+            "loss": "absolute error"
+          },
+          "nn_minus_climatology_loss": {
+            "mean": 13.559945621780411,
+            "ci95": [
+              8.18639043855991,
+              20.382590807729944
+            ],
+            "loss": "absolute error"
+          }
+        }
+      }
+    }
+  }
+}
