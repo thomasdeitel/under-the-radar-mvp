@@ -15,6 +15,8 @@ from scipy.stats import spearmanr
 from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.neural_network import MLPClassifier, MLPRegressor
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
 from .dataset import MODEL_FEATURES
@@ -27,11 +29,13 @@ PERSIST_COL = {t: "src_" + t for t in TARGETS}
 class Predictors:
     """Fits climatology, a neural-network ensemble and a gradient-boosting reference."""
 
-    def __init__(self, train: pd.DataFrame, seeds: int = 5):
+    def __init__(self, train: pd.DataFrame, seeds: int = 5, features=None):
         self.train = train
         self.seeds = seeds
-        self.scaler = StandardScaler().fit(train[MODEL_FEATURES].values)
-        Xs = self.scaler.transform(train[MODEL_FEATURES].values)
+        self.features = list(features) if features is not None else list(MODEL_FEATURES)
+        MODEL_FEATURES_ = self.features
+        self.scaler = make_pipeline(SimpleImputer(strategy="median"), StandardScaler()).fit(train[MODEL_FEATURES_].values)
+        Xs = self.scaler.transform(train[MODEL_FEATURES_].values)
         self.nn, self.gbm = {}, {}
         for t in TARGETS:
             y = train[t].values
@@ -39,19 +43,20 @@ class Predictors:
                 self.nn[t] = [MLPClassifier(hidden_layer_sizes=(32, 16), alpha=1e-3, early_stopping=True,
                                             n_iter_no_change=15, max_iter=400, random_state=s).fit(Xs, y)
                               for s in range(seeds)]
-                self.gbm[t] = HistGradientBoostingClassifier(random_state=0).fit(train[MODEL_FEATURES], y)
+                self.gbm[t] = HistGradientBoostingClassifier(random_state=0).fit(train[MODEL_FEATURES_], y)
             else:
                 yl = np.log1p(y)
                 self.nn[t] = [MLPRegressor(hidden_layer_sizes=(32, 16), alpha=1e-3, early_stopping=True,
                                            n_iter_no_change=15, max_iter=400, random_state=s).fit(Xs, yl)
                               for s in range(seeds)]
-                self.gbm[t] = HistGradientBoostingRegressor(random_state=0).fit(train[MODEL_FEATURES], yl)
+                self.gbm[t] = HistGradientBoostingRegressor(random_state=0).fit(train[MODEL_FEATURES_], yl)
+        self.log_max = {t: float(np.log1p(train[t].max())) for t in TARGETS if t not in CLASSIFICATION}
         self.clim = {t: train.groupby(["month", "hour"])[t].mean() for t in TARGETS}
         self.clim_all = {t: float(train[t].mean()) for t in TARGETS}
 
     def predict(self, pairs: pd.DataFrame) -> dict:
         """Return {target: {method: array}} plus {'nn_std': array} for the NN ensemble spread."""
-        Xs = self.scaler.transform(pairs[MODEL_FEATURES].values)
+        Xs = self.scaler.transform(pairs[self.features].values)
         out = {}
         for t in TARGETS:
             res = {"persistence": pairs[PERSIST_COL[t]].values.astype(float)}
@@ -61,12 +66,12 @@ class Predictors:
                 member = np.array([m.predict_proba(Xs)[:, 1] for m in self.nn[t]])
                 res["nn"] = member.mean(0)
                 res["nn_std"] = member.std(0)
-                res["gbm"] = self.gbm[t].predict_proba(pairs[MODEL_FEATURES])[:, 1]
+                res["gbm"] = self.gbm[t].predict_proba(pairs[self.features])[:, 1]
             else:
-                member = np.array([np.clip(np.expm1(m.predict(Xs)), 0, None) for m in self.nn[t]])
+                member = np.array([np.expm1(np.clip(m.predict(Xs), 0, self.log_max[t])) for m in self.nn[t]])
                 res["nn"] = member.mean(0)
                 res["nn_std"] = member.std(0)
-                res["gbm"] = np.clip(np.expm1(self.gbm[t].predict(pairs[MODEL_FEATURES])), 0, None)
+                res["gbm"] = np.expm1(np.clip(self.gbm[t].predict(pairs[self.features]), 0, self.log_max[t]))
             out[t] = res
         return out
 

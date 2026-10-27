@@ -1,0 +1,5 @@
+# One row per observation time, UTC. Leave a cell empty when a value is missing.
+# Add, remove or rename columns freely; every numeric column is used. Targets can be sparse.
+time,air_temp_c,dewpoint_c,pressure_hpa,wind_speed_ms,wind_dir_deg,sea_surface_temp_c,evaporation_duct_height_m,radar_detection_range_km
+2026-11-16T00:00:00Z,18.2,12.1,1016.2,4.1,250,17.6,14.5,
+2026-11-16T01:00:00Z,18.0,12.4,1016.0,4.8,255,17.6,,

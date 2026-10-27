@@ -1,0 +1,36 @@
+{
+  "time_column": "time",
+  "targets": [
+    "evaporation_duct_height_m"
+  ],
+  "feature_columns": null,
+  "angle_columns": [
+    "wind_dir_deg"
+  ],
+  "horizon_hours": 3.0,
+  "step_hours": 1.0,
+  "lags_hours": [
+    3,
+    12,
+    24
+  ],
+  "valid_ranges": {
+    "air_temp_c": [
+      -40,
+      60
+    ],
+    "pressure_hpa": [
+      850,
+      1080
+    ],
+    "wind_speed_ms": [
+      0,
+      80
+    ]
+  },
+  "max_gap_hours": 6.0,
+  "max_input_age_hours": 6.0,
+  "test_fraction": 0.2,
+  "validation_fraction": 0.2,
+  "seeds": 5
+}
