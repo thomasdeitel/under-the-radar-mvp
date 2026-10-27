@@ -1,5 +1,13 @@
 # Under the Radar MVP
 
+## Navy Atmosphere Radar Forecaster · UC San Diego i4NS
+
+Atmospheric duct prediction, radar propagation modeling, and offline operator retraining from public NOAA data.
+
+**[Project showcase and results](https://thomasdeitel.github.io/portfolio/projects/navy-atmospheric-forecasting/)** · **[Thomas Deitel’s portfolio](https://thomasdeitel.github.io/portfolio/)** · [Operator guide](docs/OPERATOR_GUIDE.md)
+
+This is a public-data prototype developed through Innovating for National Security. No Navy data was used, and operational validation remains future work.
+
 Navy 215 "Under the Radar" (i4NS). Keeps radar-relevant atmospheric information current between
 the twice-daily soundings, shows how much to trust it with a green/yellow/red light, and can be
 handed to an operator who learns it on their own data offline.
